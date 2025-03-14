@@ -5,13 +5,16 @@ st.title("✅ Sprawdzanie spójności plików CSV/Excel")
 
 # 🔹 **Lista kolumn, które mają być ZAWSZE pominięte**
 excluded_columns = [
-    "Indeks", "Jm", "Stawka VAT", "Główny kod EAN", "Główny numer katalogowy", 
-    "Waga netto", "Waga brutto", "Jednostka wagi", "Szerokość", "Wysokość", 
-    "Głębokość", "Jednostka wymiarów", "Cena hurtowa bazowa n. PLN", 
-    "Kat 4 - Nazwa", "Rozmiar producenta - Nazwa", 
-    "Kanał sprzedaży - Nazwa", "Ilość paczek", "Typ kartoteki", 
-    "Kategoria sprzedaży", "Dropshipping - Nazwa",
-    "Główny dostawca - Nazwa skrócona"
+    "indeks", "jm", "stawka vat", "główny kod ean", "główny numer katalogowy", 
+    "waga netto", "waga brutto", "jednostka wagi", "szerokość", "wysokość", 
+    "głębokość", "jednostka wymiarów", "cena hurtowa bazowa n. pln", 
+    "kat 4 - nazwa", "kanał sprzedaży - nazwa", "ilość paczek", "typ kartoteki", 
+    "kategoria sprzedaży", "dropshipping - nazwa", "rodzaj produktu - nazwa",
+    "wewnętrzny numer katalogowy - nazwa", "producent", "główny dostawca - nazwa skrócona",
+    "intrastat", "kraj pochodzenia", "kod cn", "katalogowa pln b. pln",
+    "promocyjna pln b. pln", "kat 1 - nazwa", "kat 2 - nazwa", "kat 3 - nazwa",
+    "sezon rok - nazwa", "typ sezonu - nazwa", "rok - nazwa", "sezon zamówienia - nazwa",
+    "płeć - nazwa", "wiek - nazwa", "rodzaj zasilania - nazwa", "szablon - nazwa", "dane producenta"
 ]
 
 # Wczytywanie pliku przez użytkownika
@@ -29,15 +32,16 @@ if uploaded_file:
         df.columns = df.columns.str.strip().str.lower()
         excluded_columns_lower = [col.lower().strip() for col in excluded_columns]
 
-        # 📌 **Wyświetlenie listy kolumn w pliku – żeby sprawdzić, co jest źle**
-        st.write("📌 **Rzeczywiste nazwy kolumn w pliku:**", df.columns.tolist())
+        # 📌 **Opcjonalne wyświetlenie nazw kolumn – ukryte domyślnie!**
+        if st.button("🔎 Pokaż rzeczywiste nazwy kolumn w pliku"):
+            st.write("📌 **Rzeczywiste nazwy kolumn w pliku:**", df.columns.tolist())
 
         # 🔍 **Sprawdzenie, czy plik zawiera 'Modelokolor'**
         if "modelokolor" not in df.columns:
             st.error("❌ Brak wymaganej kolumny 'Modelokolor' w pliku!")
         else:
             # 🔹 **Znalezienie kolumn, które będą sprawdzane (nie są w wykluczonych)**
-            columns_to_check = [col for col in df.columns if col not in excluded_columns_lower]
+            columns_to_check = [col for col in df.columns if col not in excluded_columns_lower and col != "modelokolor"]
 
             # 📌 **NOWOŚĆ: Wyświetlenie kolumn, które aplikacja sprawdza**
             st.write("🔎 **Kolumny, które aplikacja sprawdza:**", columns_to_check)
