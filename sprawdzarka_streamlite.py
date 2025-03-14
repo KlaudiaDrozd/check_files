@@ -8,15 +8,10 @@ excluded_columns = [
     "Indeks", "Jm", "Stawka VAT", "Główny kod EAN", "Główny numer katalogowy", 
     "Waga netto", "Waga brutto", "Jednostka wagi", "Szerokość", "Wysokość", 
     "Głębokość", "Jednostka wymiarów", "Cena hurtowa bazowa n. PLN", 
-    "Kat 4 - Nazwa", "Rozmiar - Nazwa", "Rozmiar producenta - Nazwa", 
+    "Kat 4 - Nazwa", "Rozmiar producenta - Nazwa", 
     "Kanał sprzedaży - Nazwa", "Ilość paczek", "Typ kartoteki", 
     "Kategoria sprzedaży", "Dropshipping - Nazwa",
-    "Wewnętrzny numer katalogowy - Nazwa", "Producent", "Główny dostawca - Nazwa skrócona",
-    "INTRASTAT", "Kraj pochodzenia", "Kod CN", "Katalogowa PLN b. PLN",
-    "Promocyjna PLN b. PLN", "Kat 1 - Nazwa", "Kat 2 - Nazwa", "Kat 3 - Nazwa",
-    "Sezon rok - Nazwa", "Typ sezonu - Nazwa", "Rok - Nazwa", "Sezon zamówienia - Nazwa",
-    "Kolor - Nazwa", "Płeć - Nazwa", "Wiek - Nazwa", "Rodzaj produktu - Nazwa",
-    "Rodzaj zasilania - Nazwa", "Szablon - Nazwa", "Dane producenta"
+    "Główny dostawca - Nazwa skrócona"
 ]
 
 # Wczytywanie pliku przez użytkownika
