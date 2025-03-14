@@ -9,7 +9,7 @@ excluded_columns = [
     "waga netto", "waga brutto", "jednostka wagi", "szerokość", "wysokość", 
     "głębokość", "jednostka wymiarów", "cena hurtowa bazowa n. pln", 
     "kat 4 - nazwa", "kanał sprzedaży - nazwa", "ilość paczek", "typ kartoteki", 
-    "kategoria sprzedaży", "dropshipping - nazwa",
+    "kategoria sprzedaży", "dropshipping - nazwa", "rozmiar - nazwa", "rozmiar producenta - nazwa",
     "główny dostawca - nazwa skrócona",
     "rodzaj zasilania - nazwa", "szablon - nazwa", "dane producenta"
 ]
