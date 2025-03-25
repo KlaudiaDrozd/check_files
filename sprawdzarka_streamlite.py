@@ -52,25 +52,28 @@ if uploaded_file:
             st.write("🔎 **Kolumny, które aplikacja sprawdza:**", columns_to_check)
 
             # 🔍 **Sprawdzanie spójności danych dla każdej kolumny (poza wykluczonymi)**
-            inconsistent_modelokolors = set()
+            inconsistent_data = []
             grouped = df.groupby("modelokolor")
 
             for col in columns_to_check:
                 unique_values = grouped[col].nunique()
                 inconsistent_keys = unique_values[unique_values > 1].index.tolist()
-                inconsistent_modelokolors.update(inconsistent_keys)
 
-            # 🔹 **Filtrowanie tylko błędnych rekordów**
-            if not inconsistent_modelokolors:
+                if inconsistent_keys:
+                    st.warning(f"⚠️ Kolumna: `{col}` zawiera niespójności")
+                    col_issues = df[df['modelokolor'].isin(inconsistent_keys)][['modelokolor', col]].drop_duplicates()
+                    st.dataframe(col_issues)
+                    col_issues['kolumna'] = col
+                    inconsistent_data.append(col_issues)
+
+            if not inconsistent_data:
                 st.success("✅ Wszystkie sprawdzane kolumny są spójne dla Modelokoloru!")
             else:
-                result_df = df[df['modelokolor'].isin(inconsistent_modelokolors)]
-                st.warning(f"⚠️ Wykryto niespójności dla {len(inconsistent_modelokolors)} Modelokolorów:")
-                st.dataframe(result_df)
-
-                excel_data = convert_df_to_excel(result_df)
+                # 🔽 Scal wszystkie błędy do jednego pliku do pobrania
+                full_error_df = pd.concat(inconsistent_data, ignore_index=True)
+                excel_data = convert_df_to_excel(full_error_df)
                 st.download_button(
-                    label="📥 Pobierz błędne dane jako Excel",
+                    label="📥 Pobierz wszystkie błędy jako Excel",
                     data=excel_data,
                     file_name="bledy_modelokoloru.xlsx",
                     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
