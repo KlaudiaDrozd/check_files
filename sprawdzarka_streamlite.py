@@ -4,15 +4,14 @@ from io import BytesIO
 
 st.title("✅ Sprawdzanie spójności plików CSV/Excel")
 
-# 🔹 **Lista kolumn, które mają być ZAWSZE pominięte**
+# 🔹 Lista kolumn do pominięcia
 excluded_columns = [
     "indeks", "jm", "stawka vat", "główny kod ean", "główny numer katalogowy", 
     "waga netto", "waga brutto", "jednostka wagi", "szerokość", "wysokość", 
     "głębokość", "jednostka wymiarów", "cena hurtowa bazowa n. pln", 
     "kat 4 - nazwa", "kanał sprzedaży - nazwa", "ilość paczek", "typ kartoteki", 
     "kategoria sprzedaży", "dropshipping - nazwa", "rozmiar - nazwa", "rozmiar producenta - nazwa",
-    "główny dostawca - nazwa skrócona",
-    "rodzaj zasilania - nazwa", "szablon - nazwa", "dane producenta"
+    "główny dostawca - nazwa skrócona", "rodzaj zasilania - nazwa", "szablon - nazwa", "dane producenta"
 ]
 
 def convert_df_to_excel(df):
@@ -21,7 +20,6 @@ def convert_df_to_excel(df):
         df.to_excel(writer, index=False, sheet_name='Błędy')
     return output.getvalue()
 
-# Wczytywanie pliku przez użytkownika
 uploaded_file = st.file_uploader("Wgraj plik CSV lub Excel", type=["csv", "xlsx"])
 
 if uploaded_file:
@@ -41,7 +39,6 @@ if uploaded_file:
             st.error("❌ Brak wymaganej kolumny 'Modelokolor' w pliku!")
         else:
             columns_to_check = [col for col in df.columns if col not in excluded_columns_lower and col != "modelokolor"]
-
             st.write("🔎 **Kolumny, które aplikacja sprawdza:**", columns_to_check)
 
             inconsistent_data = []
@@ -61,13 +58,14 @@ if uploaded_file:
             if not inconsistent_data:
                 st.success("✅ Wszystkie sprawdzane kolumny są spójne dla Modelokoloru!")
             else:
-                full_error_df = pd.concat(inconsistent_data, ignore_index=True)
-                excel_data = convert_df_to_excel(full_error_df)
+                result_df = pd.concat(inconsistent_data, ignore_index=True)
+                excel_data = convert_df_to_excel(result_df)
                 st.download_button(
                     label="📥 Pobierz wszystkie błędy jako Excel",
                     data=excel_data,
                     file_name="bledy_modelokoloru.xlsx",
                     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 )
+
     except Exception as e:
         st.error(f"❌ Wystąpił błąd: {e}")
