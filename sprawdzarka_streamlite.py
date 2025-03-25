@@ -1,5 +1,6 @@
 import pandas as pd
 import streamlit as st
+from io import BytesIO
 
 st.title("✅ Sprawdzanie spójności plików CSV/Excel")
 
@@ -13,6 +14,13 @@ excluded_columns = [
     "główny dostawca - nazwa skrócona",
     "rodzaj zasilania - nazwa", "szablon - nazwa", "dane producenta"
 ]
+
+def convert_df_to_excel(df):
+    output = BytesIO()
+    with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+        df.to_excel(writer, index=False, sheet_name='Błędy')
+    processed_data = output.getvalue()
+    return processed_data
 
 # Wczytywanie pliku przez użytkownika
 uploaded_file = st.file_uploader("Wgraj plik CSV lub Excel", type=["csv", "xlsx"])
@@ -44,24 +52,29 @@ if uploaded_file:
             st.write("🔎 **Kolumny, które aplikacja sprawdza:**", columns_to_check)
 
             # 🔍 **Sprawdzanie spójności danych dla każdej kolumny (poza wykluczonymi)**
-            inconsistent_data = {}
+            inconsistent_modelokolors = set()
             grouped = df.groupby("modelokolor")
 
             for col in columns_to_check:
                 unique_values = grouped[col].nunique()
-                inconsistent_rows = unique_values[unique_values > 1]
+                inconsistent_keys = unique_values[unique_values > 1].index.tolist()
+                inconsistent_modelokolors.update(inconsistent_keys)
 
-                if not inconsistent_rows.empty:
-                    inconsistent_data[col] = df.groupby("modelokolor")[col].apply(lambda x: x.unique())
-
-            # 🟢 **Wyświetlanie tylko kolumn, które mają błędy**
-            if not inconsistent_data:
+            # 🔹 **Filtrowanie tylko błędnych rekordów**
+            if not inconsistent_modelokolors:
                 st.success("✅ Wszystkie sprawdzane kolumny są spójne dla Modelokoloru!")
             else:
-                st.warning("⚠️ Wykryto różne wartości w następujących kolumnach:")
-                for col, data in inconsistent_data.items():
-                    st.write(f"🔸 **Kolumna:** `{col}`")
-                    st.write(data)
+                result_df = df[df['modelokolor'].isin(inconsistent_modelokolors)]
+                st.warning(f"⚠️ Wykryto niespójności dla {len(inconsistent_modelokolors)} Modelokolorów:")
+                st.dataframe(result_df)
+
+                excel_data = convert_df_to_excel(result_df)
+                st.download_button(
+                    label="📥 Pobierz błędne dane jako Excel",
+                    data=excel_data,
+                    file_name="bledy_modelokoloru.xlsx",
+                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                )
 
     except Exception as e:
         st.error(f"❌ Wystąpił błąd: {e}")
