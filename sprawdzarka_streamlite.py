@@ -41,15 +41,25 @@ if uploaded_file:
         if st.button("🔎 Pokaż rzeczywiste nazwy kolumn w pliku"):
             st.write("📌 **Rzeczywiste nazwy kolumn w pliku:**", df.columns.tolist())
 
-        # 🧠 Główna logika sprawdzania
-        if "modelokolor" not in df.columns:
+        # 🧠 Zmiana na elastyczne dopasowanie kolumny 'modelokolor'
+        modelokolor_column = None
+        for col in df.columns:
+            if 'modelokolor' in col:
+                modelokolor_column = col
+                break
+
+        if modelokolor_column is None:
             st.error("❌ Brak wymaganej kolumny 'Modelokolor' w pliku!")
         else:
-            columns_to_check = [col for col in df.columns if col not in excluded_columns_lower and col != "modelokolor"]
+            st.write(f"✅ Kolumna 'modelokolor' została znaleziona jako: {modelokolor_column}")
+
+            # Wybór kolumn do sprawdzenia (pomijamy te z wykluczonych)
+            columns_to_check = [col for col in df.columns if col not in excluded_columns_lower and col != modelokolor_column]
             st.write("🔎 **Kolumny, które aplikacja sprawdza:**", columns_to_check)
 
+            # 🔍 Sprawdzanie spójności danych dla każdej kolumny (poza wykluczonymi)
             inconsistent_data = []
-            grouped = df.groupby("modelokolor")
+            grouped = df.groupby(modelokolor_column)
 
             for col in columns_to_check:
                 unique_values = grouped[col].nunique()
@@ -57,7 +67,7 @@ if uploaded_file:
 
                 if inconsistent_keys:
                     st.warning(f"⚠️ Kolumna: `{col}` zawiera niespójności")
-                    col_issues = df[df['modelokolor'].isin(inconsistent_keys)][['modelokolor', col]].drop_duplicates()
+                    col_issues = df[df[modelokolor_column].isin(inconsistent_keys)][[modelokolor_column, col]].drop_duplicates()
                     st.dataframe(col_issues)
                     col_issues['kolumna'] = col
                     inconsistent_data.append(col_issues)
