@@ -12,13 +12,16 @@ excluded_columns = [
     "kat 4 - nazwa", "kanał sprzedaży - nazwa", "ilość paczek", "typ kartoteki", 
     "kategoria sprzedaży", "dropshipping - nazwa", "rozmiar - nazwa", "rozmiar producenta - nazwa",
     "główny dostawca - nazwa skrócona",
-    "rodzaj zasilania - nazwa", "dane producenta"
+    "rodzaj zasilania - nazwa", "dane producenta",
+    "id_good", "index"
 ]
 
 # 🔧 Funkcja do konwersji DataFrame do Excela
 def convert_df_to_excel(df):
     output = BytesIO()
     with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+        # Ograniczenie liczby wierszy do maksymalnego dozwolonego limitu
+        df = df.head(1048576)  # Maksymalna liczba wierszy w Excel
         df.to_excel(writer, index=False, sheet_name='Błędy')
     return output.getvalue()
 
