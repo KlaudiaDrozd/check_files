@@ -75,6 +75,14 @@ if uploaded_file:
                     st.dataframe(col_issues)
                     col_issues['kolumna'] = col
                     inconsistent_data.append(col_issues)
+                    # Przycisk do pobierania błędów dla tej konkretnej kolumny
+                    excel_data_col = convert_df_to_excel(col_issues)
+                    st.download_button(
+                        label=f"📥 Pobierz błędy dla kolumny `{col}` jako Excel",
+                        data=excel_data_col,
+                        file_name=f"bledy_{col}.xlsx",
+                        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                    )
 
             if not inconsistent_data:
                 st.success("✅ Wszystkie sprawdzane kolumny są spójne dla Modelokoloru!")
