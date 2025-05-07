@@ -41,10 +41,15 @@ if uploaded_file:
         if st.button("🔎 Pokaż rzeczywiste nazwy kolumn w pliku"):
             st.write("📌 **Rzeczywiste nazwy kolumn w pliku:**", df.columns.tolist())
 
-        # 🧠 Zmiana na elastyczne dopasowanie kolumny 'modelokolor'
+        # 🧠 Elastyczne dopasowanie kolumny 'modelokolor' dla różnych wariantów
         modelokolor_column = None
         for col in df.columns:
+<<<<<<< HEAD
+            # Sprawdzamy, czy w nazwie kolumny są fragmenty "model" i "color" w dowolnej kombinacji
+            if "model" in col and "color" in col:
+=======
             if 'modelokolor' in col:
+>>>>>>> 15d63e396f07616744b6a19ddc578ed7f4cf9311
                 modelokolor_column = col
                 break
 
