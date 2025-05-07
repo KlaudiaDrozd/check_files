@@ -20,8 +20,6 @@ excluded_columns = [
 def convert_df_to_excel(df):
     output = BytesIO()
     with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
-        # Ograniczenie liczby wierszy do maksymalnego dozwolonego limitu
-        df = df.head(1048576)  # Maksymalna liczba wierszy w Excel
         df.to_excel(writer, index=False, sheet_name='Błędy')
     return output.getvalue()
 
@@ -36,8 +34,8 @@ if uploaded_file:
         else:
             df = pd.read_excel(uploaded_file, dtype=str)
 
-        # 🧼 Normalizacja nagłówków (usuwa spacje na początku i końcu nazw)
-        df.columns = df.columns.str.strip().str.lower()  # Używamy strip() oraz lower()
+        # 🧼 Normalizacja nagłówków
+        df.columns = df.columns.str.strip().str.lower()
         excluded_columns_lower = [col.lower().strip() for col in excluded_columns]
 
         # 🔍 Podgląd kolumn po kliknięciu przycisku
@@ -47,20 +45,12 @@ if uploaded_file:
         # 🧠 Elastyczne dopasowanie kolumny 'modelokolor' dla różnych wariantów
         modelokolor_column = None
         for col in df.columns:
-<<<<<<< HEAD
-<<<<<<< HEAD
-            # Sprawdzamy, czy w nazwie kolumny są fragmenty "model" i "color" w dowolnej kombinacji
-            if "model" in col and "color" in col:
-=======
+            # Sprawdzamy, czy w nazwie kolumny dokładnie znajduje się 'modelokolor' w różnych wariantach
             if 'modelokolor' in col:
->>>>>>> 15d63e396f07616744b6a19ddc578ed7f4cf9311
-=======
-            # Sprawdzamy, czy w nazwie kolumny są fragmenty "model" i "color" w dowolnej kombinacji
-            if 'model' in col and 'color' in col:
->>>>>>> 73d83f4b55acb71aea289492060c0f79cd625925
                 modelokolor_column = col
                 break
 
+        # Debugowanie, wyświetlanie kolumny, którą aplikacja zidentyfikowała
         if modelokolor_column is None:
             st.error("❌ Brak wymaganej kolumny 'Modelokolor' w pliku!")
         else:
