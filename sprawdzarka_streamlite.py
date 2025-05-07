@@ -12,13 +12,16 @@ excluded_columns = [
     "kat 4 - nazwa", "kanał sprzedaży - nazwa", "ilość paczek", "typ kartoteki", 
     "kategoria sprzedaży", "dropshipping - nazwa", "rozmiar - nazwa", "rozmiar producenta - nazwa",
     "główny dostawca - nazwa skrócona",
-    "rodzaj zasilania - nazwa", "dane producenta"
+    "rodzaj zasilania - nazwa", "dane producenta",
+    "id_good", "index"
 ]
 
 # 🔧 Funkcja do konwersji DataFrame do Excela
 def convert_df_to_excel(df):
     output = BytesIO()
     with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+        # Ograniczenie liczby wierszy do maksymalnego dozwolonego limitu
+        df = df.head(1048576)  # Maksymalna liczba wierszy w Excel
         df.to_excel(writer, index=False, sheet_name='Błędy')
     return output.getvalue()
 
@@ -29,12 +32,12 @@ if uploaded_file:
     try:
         # 📥 Wczytanie danych
         if uploaded_file.name.endswith(".csv"):
-            df = pd.read_csv(uploaded_file, dtype=str)
+            df = pd.read_csv(uploaded_file, dtype=str, sep=';')  # Ustawiamy separator na średnik
         else:
             df = pd.read_excel(uploaded_file, dtype=str)
 
-        # 🧼 Normalizacja nagłówków
-        df.columns = df.columns.str.strip().str.lower()
+        # 🧼 Normalizacja nagłówków (usuwa spacje na początku i końcu nazw)
+        df.columns = df.columns.str.strip().str.lower()  # Używamy strip() oraz lower()
         excluded_columns_lower = [col.lower().strip() for col in excluded_columns]
 
         # 🔍 Podgląd kolumn po kliknięciu przycisku
@@ -45,11 +48,16 @@ if uploaded_file:
         modelokolor_column = None
         for col in df.columns:
 <<<<<<< HEAD
+<<<<<<< HEAD
             # Sprawdzamy, czy w nazwie kolumny są fragmenty "model" i "color" w dowolnej kombinacji
             if "model" in col and "color" in col:
 =======
             if 'modelokolor' in col:
 >>>>>>> 15d63e396f07616744b6a19ddc578ed7f4cf9311
+=======
+            # Sprawdzamy, czy w nazwie kolumny są fragmenty "model" i "color" w dowolnej kombinacji
+            if 'model' in col and 'color' in col:
+>>>>>>> 73d83f4b55acb71aea289492060c0f79cd625925
                 modelokolor_column = col
                 break
 
@@ -73,7 +81,7 @@ if uploaded_file:
                 if inconsistent_keys:
                     st.warning(f"⚠️ Kolumna: `{col}` zawiera niespójności")
                     col_issues = df[df[modelokolor_column].isin(inconsistent_keys)][[modelokolor_column, col]].drop_duplicates()
-                    st.dataframe(col_issues)
+                    st.dataframe(col_issues)  # Zachowujemy ukryty przycisk CSV
                     col_issues['kolumna'] = col
                     inconsistent_data.append(col_issues)
 
