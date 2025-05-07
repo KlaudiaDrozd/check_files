@@ -44,7 +44,7 @@ if uploaded_file:
         # 🧠 Zmiana na elastyczne dopasowanie kolumny 'modelokolor'
         modelokolor_column = None
         for col in df.columns:
-            if 'modelokolor' in col:  # Sprawdzamy, czy w nazwie kolumny jest 'modelokolor'
+            if 'modelokolor' in col:
                 modelokolor_column = col
                 break
 
