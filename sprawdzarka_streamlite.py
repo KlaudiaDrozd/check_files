@@ -72,7 +72,7 @@ if uploaded_file:
                 if inconsistent_keys:
                     st.warning(f"⚠️ Kolumna: `{col}` zawiera niespójności")
                     col_issues = df[df[modelokolor_column].isin(inconsistent_keys)][[modelokolor_column, col]].drop_duplicates()
-                    st.dataframe(col_issues)  # Zachowujemy wyświetlanie ramki danych z ukrytym przyciskiem CSV
+                    st.dataframe(col_issues)  # Zachowujemy ukryty przycisk CSV
                     col_issues['kolumna'] = col
                     inconsistent_data.append(col_issues)
 
