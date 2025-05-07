@@ -29,7 +29,7 @@ if uploaded_file:
     try:
         # 📥 Wczytanie danych
         if uploaded_file.name.endswith(".csv"):
-            df = pd.read_csv(uploaded_file, dtype=str)
+            df = pd.read_csv(uploaded_file, dtype=str, sep=';')  # Ustawiamy separator na średnik
         else:
             df = pd.read_excel(uploaded_file, dtype=str)
 
