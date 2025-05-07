@@ -44,13 +44,20 @@ if uploaded_file:
 
         # 🧠 Elastyczne dopasowanie kolumny 'modelokolor' dla różnych wariantów
         modelokolor_column = None
+        model_column_variants = [
+            'modelokolor', 'modelcolor', 'modelkolor', 'modelocolor', 
+            'Modelokolor', 'Modelcolor', 'Modelkolor', 'Modelocolor'
+        ]
+        
+        # Sprawdzamy kolumny w pliku, aby znaleźć która zawiera jeden z wariantów 'modelokolor'
         for col in df.columns:
-            # Sprawdzamy, czy w nazwie kolumny dokładnie znajduje się 'modelokolor' w różnych wariantach
-            if 'modelokolor' in col:
-                modelokolor_column = col
+            for variant in model_column_variants:
+                if variant.lower() == col.lower():  # Zwiększona elastyczność z uwzględnieniem wielkości liter
+                    modelokolor_column = col
+                    break
+            if modelokolor_column:
                 break
 
-        # Debugowanie, wyświetlanie kolumny, którą aplikacja zidentyfikowała
         if modelokolor_column is None:
             st.error("❌ Brak wymaganej kolumny 'Modelokolor' w pliku!")
         else:
