@@ -48,7 +48,7 @@ if uploaded_file:
         modelokolor_column = None
         for col in df.columns:
             # Sprawdzamy, czy w nazwie kolumny są fragmenty "model" i "color" w dowolnej kombinacji
-            if "model" in col and "color" in col:
+            if 'model' in col and 'color' in col:
                 modelokolor_column = col
                 break
 
