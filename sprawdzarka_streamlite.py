@@ -36,8 +36,8 @@ if uploaded_file:
         else:
             df = pd.read_excel(uploaded_file, dtype=str)
 
-        # 🧼 Normalizacja nagłówków
-        df.columns = df.columns.str.strip().str.lower()
+        # 🧼 Normalizacja nagłówków (usuwa spacje na początku i końcu nazw)
+        df.columns = df.columns.str.strip().str.lower()  # Używamy strip() oraz lower()
         excluded_columns_lower = [col.lower().strip() for col in excluded_columns]
 
         # 🔍 Podgląd kolumn po kliknięciu przycisku
