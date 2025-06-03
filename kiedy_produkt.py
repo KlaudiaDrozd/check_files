@@ -9,11 +9,12 @@ CSV_PATH = os.path.join(APP_DIR, "purchase_orders_data.csv")
 # Funkcja ładująca dane
 @st.cache_data(ttl=600)
 def load_data():
-    if os.path.exists(CSV_PATH):
-        return pd.read_csv(CSV_PATH, sep=';')
-    else:
-        st.error(f"Nie znaleziono pliku purchase_orders_data.csv w folderze aplikacji:\n{APP_DIR}")
-        return pd.DataFrame()
+    url = "https://raw.githubusercontent.com/twoja-nazwa/kiedy-produkt/main/purchase_orders_data.csv"
+    try:
+        return pd.read_csv(url, sep=';')
+    except Exception as e:
+        st.error(f"Nie udało się wczytać danych z GitHuba.\n{e}")
+        return pd.DataFrame(
 
 # Ustawienia aplikacji
 st.set_page_config(page_title="Kiedy przyjdzie produkt?", layout="centered")
